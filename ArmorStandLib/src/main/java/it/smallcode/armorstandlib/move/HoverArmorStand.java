@@ -1,8 +1,8 @@
-package it.smallcode.armorstandlib.rotate;
+package it.smallcode.armorstandlib.move;
 /*
 
 Class created by SmallCode
-26.06.2020 16:10
+26.06.2020 17:01
 
 */
 
@@ -11,28 +11,39 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.plugin.Plugin;
 
-public class RotateArmorStand{
+public class HoverArmorStand {
 
     private int schedulerID;
 
     private int millis = 0;
     private int durationCounter;
 
-    public RotateArmorStand(final ArmorStand armorStand, final float speed, final int delay, final int duration, Plugin plugin){
+    private double vel;
+
+    public HoverArmorStand(final ArmorStand armorStand, final double speed, final int delay, final int duration, double maxHeightCap, double minHeightCap, Plugin plugin){
 
         this.durationCounter = duration;
 
         if(this.durationCounter == 0)
             this.durationCounter = -1;
 
+        final double maxHeight = armorStand.getLocation().getY() + maxHeightCap;
+        final double minHeight = armorStand.getLocation().getY() + minHeightCap;
+
         schedulerID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
             public void run() {
 
                 millis++;
 
+                if(armorStand.getLocation().getY() >= maxHeight)
+                    vel = -speed;
+
+                if(armorStand.getLocation().getY() <= minHeight)
+                    vel = speed;
+
                 Location newLoc = armorStand.getLocation();
 
-                newLoc.setYaw(newLoc.getYaw() + speed);
+                newLoc.setY(newLoc.getY() + vel);
 
                 armorStand.teleport(newLoc);
 
@@ -53,24 +64,6 @@ public class RotateArmorStand{
 
             }
         }, delay, 0);
-
-    }
-
-    public RotateArmorStand(final ArmorStand armorStand, final float speed, int delay, Plugin plugin){
-
-        this(armorStand, speed, delay, 0, plugin);
-
-    }
-
-    public RotateArmorStand(final ArmorStand armorStand, final float speed, Plugin plugin, int duration){
-
-        this(armorStand, speed, 0, duration, plugin);
-
-    }
-
-    public RotateArmorStand(final ArmorStand armorStand, final float speed, Plugin plugin) {
-
-        this(armorStand, speed, 0, 0, plugin);
 
     }
 

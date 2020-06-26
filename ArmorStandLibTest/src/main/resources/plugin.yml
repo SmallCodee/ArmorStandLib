@@ -1,0 +1,7 @@
+name: ArmorStandTest
+version: 1.0
+author: SmallCode
+main: it.smallcode.test.ArmorStandTest
+api-version: 1.13
+commands:
+  spawnArmorStand:
